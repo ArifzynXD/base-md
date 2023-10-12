@@ -65,30 +65,36 @@ module.exports = async (conn, m) => {
     if (body.startsWith(">")) {
       if (!itsMe) return;
       try {
-        let evaled = await eval(q);
-        if (typeof evaled !== "string")
-          evaled = require("util").inspect(evaled);
-        await m.reply(evaled);
-      } catch (err) {
-        await m.reply(String(err));
+      	var txtt = util.format(await eval(`(async()=>{ ${q} })()`));
+      	m.reply(txtt)
+      } catch (e) {
+      	let _syntax = "";
+          let _err = util.format(e);
+          let err = syntaxerror(q, "EvalError", {
+            allowReturnOutsideFunction: true,
+            allowAwaitOutsideFunction: true,
+            sourceType: "module",
+          });
+          if (err) _syntax = err + "\n\n";
+          m.reply(util.format(_syntax + _err))
       }
     }
 
     if (body.startsWith("=>")) {
       if (!itsMe) return;
-      function Return(sul) {
-        let sat = JSON.stringify(sul, null, 2);
-        if (sat) {
-          var bang = util.format(sat);
-        } else if (sat == undefined) {
-          var bang = util.format(sul);
-        }
-        return m.reply(bang);
-      }
       try {
-        m.reply(util.format(eval(`(async () => { return ${q} })()`)));
+      	var txtt = util.format(await eval(`(async()=>{ return ${q} })()`));
+      	m.reply(txtt)
       } catch (e) {
-        m.reply(String(e));
+      	let _syntax = "";
+          let _err = util.format(e);
+          let err = syntaxerror(q, "EvalError", {
+            allowReturnOutsideFunction: true,
+            allowAwaitOutsideFunction: true,
+            sourceType: "module",
+          });
+          if (err) _syntax = err + "\n\n";
+          m.reply(util.format(_syntax + _err))
       }
     }
 
