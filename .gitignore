@@ -1,0 +1,17 @@
+# Ignore everything in this directory
+tmp/*
+
+# Dependency directories
+.git/
+node_modules/
+
+# data-single-auth
+session.data.json
+package-lock.json
+yarn.lock
+
+#data-multi-auth
+eng.traineddata
+data.store.json
+session/
+store/
